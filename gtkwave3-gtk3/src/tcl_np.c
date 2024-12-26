@@ -472,14 +472,14 @@ int NpInitInterp(Tcl_Interp *interp, int install_tk) {
    * Tk_InitStubs.
    */
   if (TCL_OK != Tcl_Init(interp)) {
-    CONST char *msg = Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY);
+    const char *msg = Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY);
     fprintf(stderr, "GTKWAVE | Tcl_Init error: %s\n", msg) ;
     exit(EXIT_FAILURE);
   }
   if (install_tk) {
     NpLog("Tcl_PkgRequire(\"Tk\", \"%s\", 0)\n", TK_VERSION);
     if (1 && Tcl_PkgRequire(interp, "Tk", TK_VERSION, 0) == NULL) {
-      CONST char *msg = Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY);
+      const char *msg = Tcl_GetVar(interp, "errorInfo", TCL_GLOBAL_ONLY);
       NpPlatformMsg(msg, "NpInitInterp Tcl_PkgRequire(Tk)");
       NpPlatformMsg("Failed to create initialize Tk", "NpInitInterp");
       return TCL_ERROR;
@@ -550,7 +550,7 @@ Tcl_Interp *NpCreateMainInterp(char *me, int install_tk) {
   }
 #else
   tcl_createInterp   = Tcl_CreateInterp;
-  tcl_findExecutable = Tcl_FindExecutable;
+  tcl_findExecutable = (void (*)(const char *))Tcl_FindExecutable;
 #endif
 
   if (dllName[0] == '\0') {
